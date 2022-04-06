@@ -1,49 +1,62 @@
-#include <iostream>
-#include <string>
+include <iostream>
+#include "Problem3.hpp"
 using namespace std;
 
-#include "problem3.hpp"
 
 int main() {
-	int numEmployees;
-	char* tempName;
-	string tempBirthdate;
-	char* tempCompany;
-	string tempTitle;
-	string tempID;
-	string tempType;
-	int tempSalary;
-	
-	cout << "Enter the number of Employees: ";
-	cin >> numEmployees;
-	cout << endl;
+    cout << "Enter the number of Employees: " << endl;
+    string s1;
+    cin >> s1;
+    int number_of_employes = stoi(s1);
 
-	for(int i = 0; i < numEmployees; i++) {
-		cout << "Enter the following information for Employee number " << i+1 << endl;
-		cout << "Name: ";
-		cin >> tempName;
-		cout << "Birth Date: ";
-		cin >> tempBirthdate;
-		cout << "ID: ";
-		cin >> tempID;
-		cout << "Title: ";
-		cin >> tempTitle;
-		cout << "Company: ";
-		cin >> tempCompany;
-		cout << "Employee Type (Salaried, Commission, or Hourly): ";
-		cin >> tempType;
-		cout << "Annual Salary: $";
-		cin >> tempSalary;
-		cout << endl;
-		/*if(tempType == "Salaried") {
-			// make new salaried employee
-		}*/
+    int counter = 1;
+    Employee *list[number_of_employes];
 
-		Employee employee1("40", "Engineering", "Apple", CommissionEmployee);
-		employee1.setFName("John");
-		employee1.setBirthdate("December 31, 2001");
-		cout << employee1.getFName() << " " << employee1.getBirthdate();
-		
-	}
-	
+
+    while (counter <= number_of_employes) {
+        cout << "Enter the following information for Employee number" << to_string(counter) << ": " << endl;
+        cout << "Name: " << endl;
+        string name_1;
+        cin >> name_1;
+
+        cout << "Birthdate: " << endl;
+        string birthdate_1;
+        cin >> birthdate_1;
+
+        cout << "Company: " << endl;
+        string company_1;
+        cin >> company_1;
+
+        cout << "Title: " << endl;
+        string title_1;
+        cin >> title_1;
+
+        cout << "ID: " << endl;
+        string id_1;
+        cin >> id_1;
+
+        cout << "Employee Type: " << endl;
+        string employ_type_1;
+        cin >> employ_type_1;
+
+        if (employ_type_1 == "Hourly") {
+            string number;
+            cout << "Enter the hourly rate: " << endl;
+            cin >> number;
+            double hourly_rate = stoi(number);
+
+            string number2;
+            cout << " Enter the number of Hours work per week" << endl;
+            cin >> number;
+            int number_of_hours_per_week = stoi(number2);
+            list[counter] = new HourlyEmployee()
+
+
+        }
+
+        if (employ_type_1 == "Salaried") {
+
+        }
+
+    }
 }
