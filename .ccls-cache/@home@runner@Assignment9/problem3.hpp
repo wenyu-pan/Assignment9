@@ -4,7 +4,7 @@ using namespace std;
 
 
 class Person {
-protected:
+private:
     char* fName;
     string birthdate;
 
@@ -12,9 +12,9 @@ public:
     Person() {
         fName = NULL;
         birthdate = "";
-
     }
 
+public:
     Person(char* fn, string bd) {
         fName = fn;
         birthdate = bd;
@@ -22,7 +22,8 @@ public:
 
     ~Person(){}
 
-    char * getFName() {
+public:
+    char * fNameGetter() {
         return this->fName;
     }
 
@@ -30,7 +31,7 @@ public:
 			this->fName = givenName;
 		}
 
-    string getBirthdate() {
+    string birthdateGetter() {
         return this->birthdate;
     }
 
@@ -47,7 +48,7 @@ enum class EmployeeType{
 };
 
 class Employee : public Person {
-protected:
+private:
     string employeeID;
     string jobTitle;
     char * company;
@@ -61,6 +62,7 @@ public:
         this->type = EmployeeType::HourlyEmployee;
     }
 
+public:
     Employee(string eid, string jb, char * company, EmployeeType t) {
         this->employeeID = eid;
         this->jobTitle = jb;
@@ -70,11 +72,9 @@ public:
 
     ~Employee(){}
 
-    string getEmployeeID() {
-        return this->employeeID;
-    }
 
-		void setEmployeeID(string givenID) {
+public:
+    void setEmployeeID(string givenID) {
 			this->employeeID = givenID;
 		}
 
@@ -82,9 +82,13 @@ public:
         return this->jobTitle;
     }
 
-		void setTitle(string givenTitle) {
+		void setJobTitle(string givenTitle) {
 			this->jobTitle = givenTitle;
 		}
+
+    string employIDGetter() {
+        return this->employeeID;
+    }
 
     char * companyGetter() {
         return this->company;
@@ -102,139 +106,155 @@ public:
 			this->type = givenType;
 		}
 
-    virtual double getAnnualSalary(); // defined as header, no information ??????????????????????????????????????????/
+    //pure virtual function, defined in the specific subclass
+    virtual double getAnnualSalary() = 0;
 
-		//finish this ***************************************
-		string toString() {
-			
-		}
+    virtual std::ostream & operator<<(std::ostream &output) = 0;
 
-    std::ostream & operator<<(std::ostream &output) {
-        output << this->toString() << endl;
-    }
-
-		// compares the given employee to the current employee to check whose salary is larger
-    bool operator==(Employee & obj) {
-			if (this->getAnnualSalary() > obj.getAnnualSalary()) {
-				return true;
-			}
-			else if (this->getAnnualSalary() < obj.getAnnualSalary()) {
-				return false;
-			}
-			else {
-				return false;
-			}
-    }
+    // compares the given employee to the current employee to check whose salary is larger
+    virtual int operator==(Employee & e) = 0;
 };
 
 // class for a SalariedEmployee
 class SalariedEmployee : public Employee {
-	protected:
-		double basePay;
+private:
+    double basePay;
 
-	public:
-		SalariedEmployee() {
-			this->basePay = 0;
+public:
+    SalariedEmployee() {
+        this->basePay = 0;
+    }
+
+    SalariedEmployee(double bp) {
+        this->basePay = bp;
+    }
+
+    ~SalariedEmployee(){}
+
+
+
+    double getBasePay() {
+        return this->basePay;
+    }
+
+		void setBasePay(double pay) {
+			this->basePay = pay;
 		}
 
-		SalariedEmployee(double bp) {
-			this->basePay = bp;
-		}
 
-		~SalariedEmployee(){}
+    // gets the current SalariedEmployee's annual salary with the basePay
+    virtual double getAnnualSalary() {
+        return basePay;
+    }
 
-		double getBasePay() {
-			return basePay;
-		}
+    virtual std::ostream & operator<<(std::ostream &output) {
+        output << this->employIDGetter() << ": " << this->getAnnualSalary() << endl;
+      return output;
+    }
 
-		// gets the current SalariedEmployee's annual salary with the basePay
-		double getAnnualSalary() {
-			return basePay;
-		}
+    // compares the given employee to the current employee to check whose salary is larger
+    virtual int operator==(Employee & e) {
+        return (this->getAnnualSalary() - e.getAnnualSalary());
+    }
 
 
-		std::ostream & operator<<(std::ostream &output) {
-        output << this->getEmployeeID() << ": " << this->getAnnualSalary() << endl;
-			}
-
-  	bool operator==(Employee & obj); // no overriding necessary??????????????
 };
 
 // class for a CommissionEmployee
 class CommissionEmployee : public SalariedEmployee {
-	protected:
-		double salesTotal, commissionPercentage;
+private:
+    double salesTotal, commissionPercentage;
 
-	public:
-		CommissionEmployee() {
-			this->salesTotal = 0;
-			this->commissionPercentage = 0;
-		}
+public:
+    CommissionEmployee() {
+        this->salesTotal = 0;
+        this->commissionPercentage = 0;
+    }
 
-		CommissionEmployee(double st, double cp) {
-			this->salesTotal = st;
-			this->commissionPercentage = cp;
-		}
+    CommissionEmployee(double st, double cp) {
+        this->salesTotal = st;
+        this->commissionPercentage = cp;
+    }
 
-		~CommissionEmployee(){}
+    ~CommissionEmployee(){}
 
-		// getter method to return salesTotal
-		double getSalesTotal() {
-			return salesTotal;
-		}
+    // getter method to return salesTotal
+    double salesTotalGetter() {
+        return salesTotal;
+    }
 
-		// getter method to return commissionPercentage
-		double getCommissionPercentage() {
-			return commissionPercentage;
-		}
+    // getter method to return commissionPercentage
+    double getCommissionPercentage() {
+        return commissionPercentage;
+    }
 
-		// gets the current CommissionEmployee's annual salary with the basePay
-		double getAnnualSalary() {
-			return getBasePay() + (commissionPercentage * salesTotal);
-		}
+    // gets the current CommissionEmployee's annual salary with the basePay
+    double getAnnualSalary() {
+        return this->getBasePay() + (getCommissionPercentage() * salesTotal);
+    }
 
-		// operator<<
+     std::ostream & operator<<(std::ostream &output) {
+        output << this->employIDGetter() << ": " << this->getAnnualSalary() << endl;
+      return output;
+    }
 
-		//bool operator==(Employee & obj); // no overriding necessary??????????????
+    // compares the given employee to the current employee to check whose salary is larger
+    int operator==(Employee & e) {
+        return (this->getAnnualSalary() - e.getAnnualSalary());
+    }
+
 };
 
-// class for a HourlyEmployee
+
 class HourlyEmployee : public Employee {
-	protected:
-		double hourlyRate;
-		int numHoursPerWeek;
+private:
+    double hourlyRate;
+    int numberOfHoursPerWeek;
 
-	public:
-		HourlyEmployee() {
-			this->hourlyRate = 0;
-			this->numHoursPerWeek = 0;
-		}
+public:
+    HourlyEmployee() {
+        this->hourlyRate = 0;
+        this->numberOfHoursPerWeek = 0;
+    }
 
-		HourlyEmployee(double hr, int hours) {
-			this->hourlyRate = hr;
-			this->numHoursPerWeek = hours;
-		}
+public:
+    HourlyEmployee(double hourlyRate, int numberOfHoursPerWeek) {
+        this->hourlyRate = hourlyRate;
+        this->numberOfHoursPerWeek = numberOfHoursPerWeek;
+    }
 
-		~HourlyEmployee(){}
+public:
 
-		// getter function to return hourlyRate
-		double getHourlyRate() {
-			return hourlyRate;
-		}
+    ~HourlyEmployee(){}
 
-		// getter function to return numHoursPerWeek
-		int getNumHoursPerWeek() {
-			return numHoursPerWeek;
-		}
+public:
+    double getHourlyRate() {
+        return this->hourlyRate;
+    }
 
-		// gets the current HourlyEmployee's annual salary with the basePay
-		double getAnnualSalary() {
-			return (numHoursPerWeek * hourlyRate)*52;
-		}
+public:
+     std::ostream & operator<<(std::ostream &output) {
+        output << this->employIDGetter() << ": " << this->getAnnualSalary() << endl;
+      return output;
+    }
 
-		// operator<<
+public:
+    // compares the given employee to the current employee to check whose salary is larger
+    int operator==(Employee & e) {
+        return (this->getAnnualSalary() - e.getAnnualSalary());
+    }
+
+public:
+double getAnnualSalary() {
+  return this->hourlyRate * this->numberOfHoursPerWeek;
+}
+
+
+    //main
+    //create a vector
+    //create a pointer to the employee
+    //delete each employee instead of the vector
+    //use sort for sorting
+
+
 };
-
-
-
-
